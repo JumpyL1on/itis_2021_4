@@ -17,7 +17,7 @@ namespace TestService.Controllers
         {
             HttpClient = httpClient;
         }
-
+        
         [HttpPost]
         public async Task Post()
         {
@@ -30,6 +30,22 @@ namespace TestService.Controllers
                 if (roles != null)
                     foreach (var role in roles)
                         await writer.WriteLineAsync(role);
+            }
+
+            url = "https://localhost:5001/DocumentStatus/123";
+            result = await HttpClient.GetAsync(url);
+            if (result.IsSuccessStatusCode)
+            {
+                var status = await result.Content.ReadFromJsonAsync<DocumentStatusInfo>();
+                await writer.WriteLineAsync(status?.Name);
+            }
+
+            url = "https://localhost:5001/api/suffix?text=text";
+            result = await HttpClient.GetAsync(url);
+            if (result.IsSuccessStatusCode)
+            {
+                var text = await result.Content.ReadAsStringAsync();
+                await writer.WriteLineAsync(text);
             }
         }
     }
